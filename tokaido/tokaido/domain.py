@@ -31,4 +31,6 @@ def index() -> List[tokaido.models.Step]:
     step_7.next_steps = [step_9]
     step_9.next_steps = [step_10]
 
-    return [step_1, step_2, step_3, step_4, step_5, step_6, step_7, step_8, step_9, step_10]
+    steps = [step_1, step_2, step_3, step_4, step_5, step_6, step_7, step_8, step_9, step_10]
+
+    return steps
