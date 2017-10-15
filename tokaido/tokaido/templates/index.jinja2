@@ -18,20 +18,25 @@
       </nav>
     </header>
     <div class="container-fluid">
+      <button class="btn btn-primary" id="new-step-button">New Step</button>
       <div class="mermaid">
         graph TD
+        {# id prefix is for a bug of mermaid. Doesn't work callback if id starts with number #}
         {% for step in steps %}
-          {{ step.id }}({{ step.title }})
+          id{{ step.id }}({{ step.title }})
+        {% endfor %}
+        {% for step in steps %}
+          click id{{ step.id }} select
         {% endfor %}
         {% for step in steps %}
           {% for next_step in step.next_steps %}
-            {{ step.id }} --> {{ next_step.id }}
+            id{{ step.id }} --> id{{ next_step.id }}
           {% endfor %}
         {% endfor %}
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script>
-    <script>mermaid.initialize({startOnLoad: true, theme: 'forest'});</script>
+    <script src="/static/tokaido.js"></script>
   </body>
 </html>

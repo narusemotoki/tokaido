@@ -43,6 +43,10 @@ class Step:
         return tokaido.models.Step.create(title)
 
     @classmethod
+    def get(cls, id: int) -> tokaido.models.Step:
+        return tokaido.models.Step.find_by_id(id)
+
+    @classmethod
     def update(cls, id: int, title: str, next_step_ids: Set[int]) -> tokaido.models.Step:
         step = tokaido.models.Step.find_by_id(id)
         existing_next_step_ids = set()

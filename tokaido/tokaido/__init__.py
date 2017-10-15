@@ -41,6 +41,7 @@ def init_json_renderer(config: pyramid.config.Configurator) -> None:
         return {
             'id': step.id,
             'title': step.title,
+            'next_step_ids': [next_step.next_step_id for next_step in step.next_steps]
         }
 
     renderer.add_adapter(tokaido.models.Step, step_adapter)
@@ -55,14 +56,19 @@ def init_wsgi_app() -> pyramid.router.Router:
         ],
         'pyramid.reload_templates': True,
     })
+    init_json_renderer(config)
 
     for name, path, method in [
             ('index', "/", 'GET'),
             ('api_create_step', "/api/steps", 'POST'),
+            ('api_get_step', "/api/steps/{step_id:\d+}", 'GET'),
             ('api_update_step', "/api/steps/{step_id:\d+}", 'PUT'),
     ]:
         config.add_route(name, path, request_method=method)
     config.scan()
+
+    config.add_static_view('static', '../static', cache_max_age=1)
+    config.commit()
 
     return config.make_wsgi_app()
 
