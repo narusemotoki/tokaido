@@ -1,6 +1,11 @@
 import logging
+from typing import (
+    Any,
+    Dict,
+)
 
 import pyramid.config
+import pyramid.renderers
 import pyramid.router
 import sqlalchemy
 import sqlalchemy.exc
@@ -28,6 +33,20 @@ def init_database() -> None:
     tokaido.models.Base.metadata.create_all(bind=engine)
 
 
+def init_json_renderer(config: pyramid.config.Configurator) -> None:
+    renderer = pyramid.renderers.JSON()
+
+    def step_adapter(
+            step: tokaido.models.Step, request: pyramid.request.Request) -> Dict[str, Any]:
+        return {
+            'id': step.id,
+            'title': step.title,
+        }
+
+    renderer.add_adapter(tokaido.models.Step, step_adapter)
+    config.add_renderer('json', renderer)
+
+
 def init_wsgi_app() -> pyramid.router.Router:
     config = pyramid.config.Configurator(settings={
         'pyramid.includes': [
@@ -39,6 +58,8 @@ def init_wsgi_app() -> pyramid.router.Router:
 
     for name, path, method in [
             ('index', "/", 'GET'),
+            ('api_create_step', "/api/steps", 'POST'),
+            ('api_update_step', "/api/steps/{step_id:\d+}", 'PUT'),
     ]:
         config.add_route(name, path, request_method=method)
     config.scan()
