@@ -6,7 +6,7 @@ import tokaido.views
 
 
 @unittest.mock.patch('tokaido.domain.index')
-def test_hello_world(mock_index):
+def test_index(mock_index):
     steps = [
         unittest.mock.MagicMock(id=1)
     ]
