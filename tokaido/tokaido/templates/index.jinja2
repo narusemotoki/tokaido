@@ -30,7 +30,7 @@
         {% endfor %}
         {% for step in steps %}
           {% for next_step in step.next_steps %}
-            id{{ step.id }} --> id{{ next_step.id }}
+            id{{ step.id }} --> id{{ next_step.next_step_id }}
           {% endfor %}
         {% endfor %}
         </div>

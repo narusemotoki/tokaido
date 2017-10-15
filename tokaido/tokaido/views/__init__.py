@@ -37,7 +37,7 @@ def handle_error(error: Exception, request: pyramid.request.Request) -> pyramid.
 @pyramid.view.view_config(route_name='index', renderer="templates/index.jinja2")
 def index(request: pyramid.request.Request) -> Dict[str, List[tokaido.models.Step]]:
     return {
-        'steps': tokaido.domain.index()
+        'steps': tokaido.domain.Step.all(),
     }
 
 

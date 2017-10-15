@@ -5,7 +5,7 @@ import pyramid.testing
 import tokaido.views
 
 
-@unittest.mock.patch('tokaido.domain.index')
+@unittest.mock.patch('tokaido.domain.Step.all')
 def test_index(mock_index):
     steps = [
         unittest.mock.MagicMock(id=1)

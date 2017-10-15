@@ -1,3 +1,7 @@
+from typing import (
+    Iterator,
+)
+
 from sqlalchemy import (
     Column,
     ForeignKey,
@@ -61,6 +65,10 @@ class Step(Base):  # type: ignore
         if step:
             return step
         raise tokaido.exceptions.ResourceNotFoundError()
+
+    @classmethod
+    def all(cls) -> Iterator['Step']:
+        return DBSession.query(cls).all()
 
 
 def mark_changed() -> None:
