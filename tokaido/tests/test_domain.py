@@ -5,11 +5,6 @@ import tokaido.domain
 import tokaido.models
 
 
-def test_index():
-    for step in tokaido.domain.index():
-        assert isinstance(step, tokaido.models.Step)
-
-
 class TestStep:
     def setup_method(self):
         tests.setup_db()
@@ -31,3 +26,12 @@ class TestStep:
             assert updated_first.title == new_title
             assert len(updated_first.next_steps) == 1
             assert updated_first.next_steps[0].next_step_id == second_step_id
+
+    def test_all(self):
+        with transaction.manager:
+            step_id = tokaido.domain.Step.create("first").id
+
+        with transaction.manager:
+            steps = tokaido.domain.Step.all()
+            assert len(steps) == 1
+            assert steps[0].id == step_id
