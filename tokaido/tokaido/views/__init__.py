@@ -41,15 +41,13 @@ def index(request: pyramid.request.Request) -> Dict[str, List[tokaido.models.Ste
     }
 
 
-@pyramid.view.view_config(route_name='api_add_step')
+@pyramid.view.view_config(route_name='api_create_step', renderer='json')
 def api_add_step(request: pyramid.request.Request) -> pyramid.response.Response:
     class Schema(colander.MappingSchema):
         title = colander.SchemaNode(colander.String())
 
-    return pyramid.response.Response(
-        status=http.HTTPStatus.CREATED,
-        json=tokaido.domain.Step.create(**Schema().deserialize(request.json_body))
-    )
+    request.response.status = http.HTTPStatus.CREATED
+    return tokaido.domain.Step.create(**Schema().deserialize(request.json_body))
 
 
 class IntegerSet:
@@ -63,15 +61,31 @@ class IntegerSet:
         return set(int(element) for element in self.colander_set.deserialize(node, cstruct))
 
 
-@pyramid.view.view_config(route_name='api_set_next_step')
+@pyramid.view.view_config(route_name='api_update_step', renderer='json')
 def api_update_step(request: pyramid.request.Request) -> pyramid.response.Response:
     class Schema(colander.MappingSchema):
         id = colander.SchemaNode(colander.Integer())
         title = colander.SchemaNode(colander.String())
         next_step_ids = colander.SchemaNode(IntegerSet())
 
-    return pyramid.response.Response(
-        status=http.HTTPStatus.CREATED,
-        json=tokaido.domain.Step.update(**Schema().deserialize(
-            dict(id=request.match_dict['step_id'], **request.json_body)))
+    request.response.status = http.HTTPStatus.OK
+    return tokaido.domain.Step.update(
+        **Schema().deserialize(
+            dict(id=request.matchdict['step_id'], **request.json_body)
+        )
+    )
+
+
+@pyramid.view.view_config(route_name='api_get_step', renderer='json')
+def api_get_step(request: pyramid.request.Request) -> pyramid.response.Response:
+    class Schema(colander.MappingSchema):
+        id = colander.SchemaNode(colander.Integer())
+
+    request.response.status = http.HTTPStatus.OK
+    return tokaido.domain.Step.get(
+        **Schema().deserialize(
+            {
+                'id': request.matchdict['step_id']
+            }
+        )
     )
