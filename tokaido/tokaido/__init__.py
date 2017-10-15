@@ -25,6 +25,7 @@ def init_database() -> None:
     )
     tokaido.models.DBSession.configure(bind=engine)
     tokaido.models.Base.metadata.bind = engine
+    tokaido.models.Base.metadata.create_all(bind=engine)
 
 
 def init_wsgi_app() -> pyramid.router.Router:
